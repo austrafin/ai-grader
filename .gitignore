@@ -143,8 +143,6 @@ venv.bak/
 
 # mypy
 .mypy_cache/
-.dmypy.json
-dmypy.json
 
 # Pyre type checker
 .pyre/
@@ -156,5 +154,6 @@ dmypy.json
 cython_debug/
 
 # Output files
+*.json
 *.jsonl
 *.txt
