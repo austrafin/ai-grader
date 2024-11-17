@@ -36,8 +36,8 @@ COMMENT_PATTERN = re.compile(
 )
 
 
-def remove_comments(text):
-    def replacer(match):
+def remove_comments(text: str):
+    def replacer(match: re.Match[str]) -> str:
         s = match.group(0)
 
         if s.startswith("/"):
@@ -48,7 +48,7 @@ def remove_comments(text):
     return re.sub(COMMENT_PATTERN, replacer, text)
 
 
-def remove_comments_from_file(file_path, destination):
+def remove_comments_from_file(file_path: str, destination: str):
     with open(file_path, "r", encoding="ISO-8859-1") as file:
         source_code = file.read()
 
@@ -56,14 +56,8 @@ def remove_comments_from_file(file_path, destination):
         file.write(remove_comments(source_code))
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("root")
-
-    args = parser.parse_args()
-
-    for course_dir in os.listdir(args.root):
+def anonymize_files(root_directory: str):
+    for course_dir in os.listdir(root_directory):
         course_path = os.path.join(args.root, course_dir)
 
         if os.path.isdir(course_path):
@@ -78,7 +72,7 @@ if __name__ == "__main__":
                     destination = os.path.join(student_path, "anonymized")
 
                     if os.path.isdir(destination):
-                        shutil.rmtree(destination, onexc=on_rm_error)
+                        shutil.rmtree(destination, onexc=on_rm_error)  # type: ignore
 
                     os.mkdir(destination)
 
@@ -90,3 +84,13 @@ if __name__ == "__main__":
                             os.path.join(src_path, file),
                             os.path.join(destination, file),
                         )
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("root")
+
+    args = parser.parse_args()
+
+    anonymize_files(args.root)

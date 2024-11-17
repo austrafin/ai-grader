@@ -85,7 +85,7 @@ def get_csv_line(
     ai_points: Points,
     actual_points: Points,
     key: Literal["overall_solution"] | Literal["style"],
-):
+) -> str:
     return f"{ai_points[key]},{actual_points[key]}\n"
 
 
