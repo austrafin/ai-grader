@@ -27,16 +27,13 @@ import os
 import re
 import shutil
 
+from utils import on_rm_error
+
 
 COMMENT_PATTERN = re.compile(
     r'//.*?$|/\*.*?\*/|\'(?:\\.|[^\\\'])*\'|"(?:\\.|[^\\"])*"',
     re.DOTALL | re.MULTILINE,
 )
-
-
-def on_rm_error(func, path, _):
-    os.chmod(path, stat.S_IWRITE)
-    func(path)
 
 
 def remove_comments(text):

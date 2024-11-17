@@ -29,8 +29,9 @@ python clean_repositories.py C:/courses/2023_autumn/student_repositories/project
 import argparse
 import os
 import shutil
-import stat
-from typing import Callable, TypedDict
+
+from typing import TypedDict
+from utils import on_rm_error
 
 
 class ToBeDeleted(TypedDict):
@@ -94,11 +95,6 @@ TO_BE_DELETED: ToBeDeleted = {
         "https_",
     ),
 }
-
-
-def on_rm_error(func: Callable[[str], None], path: str):
-    os.chmod(path, stat.S_IWRITE)
-    func(path)
 
 
 def delete_dir_or_file(path: str):
