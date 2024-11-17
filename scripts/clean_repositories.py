@@ -1,3 +1,31 @@
+"""Removes all but code files from the repositories and unifies the directory
+structure
+
+Assumes the following directory structure:
+<repositories_path>/
+├── <TUNI ID 1>/
+│   ├── student/
+│   │   ├── <project_round_dir>/
+│   │   │   ├── <project_assignment_dir>/
+│   │   │   │   ├── *.h
+│   │   │   │   ├── *.cpp
+│   │   │   │   └── *.ui
+│   │   │   ├── ...
+│   │   │   └── n/
+│   │   │       └── ...
+│   │   └── ...
+│   └── ...
+├── ...
+└── <TUNI ID n>/
+    └── ...
+
+Usage:
+python clean_repositories.py <repositories_path> <project_round_dir> <project_assignment_dir>
+
+Example:
+python clean_repositories.py C:/courses/2023_autumn/student_repositories/project_1 04 checkers
+"""
+
 import argparse
 import os
 import shutil
@@ -141,13 +169,13 @@ def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("repositories_path")
-    parser.add_argument("round_dir")
+    parser.add_argument("project_round_dir")
     parser.add_argument("project_assignment_dir")
 
     args = parser.parse_args()
 
     delete_directories(
-        args.repositories_path, args.round_dir, args.project_assignment_dir
+        args.repositories_path, args.project_round_dir, args.project_assignment_dir
     )
 
 
