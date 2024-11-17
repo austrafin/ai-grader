@@ -30,11 +30,18 @@ import argparse
 import os
 import shutil
 import stat
+from typing import Callable, TypedDict
+
+
+class ToBeDeleted(TypedDict):
+    exact: tuple[str, ...]
+    prefixes: tuple[str, ...]
+
 
 SRC_DIR = "src"
 STUDENT_DIR = "student"
 ALLOWED_EXTENSIONS = (".cpp", ".hh", ".ui")
-TO_BE_DELETED = {
+TO_BE_DELETED: ToBeDeleted = {
     "exact": (
         ".idea",
         ".vscode",
@@ -89,18 +96,34 @@ TO_BE_DELETED = {
 }
 
 
-def on_rm_error(func, path, exc):
+def on_rm_error(func: Callable[[str], None], path: str):
     os.chmod(path, stat.S_IWRITE)
     func(path)
 
 
-def delete_directories(repositories_path, project_round_dir, project_assignment_dir):
-    def delete_dir_or_file(path):
-        if os.path.isdir(path):
-            shutil.rmtree(path, onexc=on_rm_error)
-        else:
-            os.remove(path)
+def delete_dir_or_file(path: str):
+    if os.path.isdir(path):
+        shutil.rmtree(path, onexc=on_rm_error)  # type: ignore
+    else:
+        os.remove(path)
 
+
+def safe_delete_directory(dir_name: str, filepath: str) -> bool:
+    """Deletes the directory only if its name is not unknown"""
+    if dir_name in (TO_BE_DELETED["exact"]) or dir_name.startswith(
+        TO_BE_DELETED["prefixes"]
+    ):
+        delete_dir_or_file(filepath)
+        return True
+    else:
+        # Print the directory path for manual inspection
+        print(filepath)
+        return False
+
+
+def delete_directories(
+    repositories_path: str, project_round_dir: str, project_assignment_dir: str
+):
     for repository_dir in os.listdir(repositories_path):
         repository_path = os.path.join(repositories_path, repository_dir)
         project_student_dir = project_assignment_path = os.path.join(
@@ -142,15 +165,7 @@ def delete_directories(repositories_path, project_round_dir, project_assignment_
                         filepath = os.path.join(assignment_path, file)
 
                         if os.path.isdir(filepath):
-                            file_lowercase = file.lower()
-
-                            if file_lowercase in (
-                                TO_BE_DELETED["exact"]
-                            ) or file_lowercase.startswith(TO_BE_DELETED["prefixes"]):
-                                delete_dir_or_file(filepath)
-                            else:
-                                move_files = False
-                                print(filepath)
+                            safe_delete_directory(file.lower(), filepath)
                         elif not file.endswith(ALLOWED_EXTENSIONS):
                             delete_dir_or_file(filepath)
 
