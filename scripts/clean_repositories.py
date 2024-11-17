@@ -6,7 +6,7 @@ import stat
 SRC_DIR = "src"
 STUDENT_DIR = "student"
 ALLOWED_EXTENSIONS = (".cpp", ".hh", ".ui")
-DIRECTORIES_TO_DELETE = {
+TO_BE_DELETED = {
     "exact": (
         ".idea",
         ".vscode",
@@ -117,10 +117,8 @@ def delete_directories(repositories_path, project_round_dir, project_assignment_
                             file_lowercase = file.lower()
 
                             if file_lowercase in (
-                                DIRECTORIES_TO_DELETE["exact"]
-                            ) or file_lowercase.startswith(
-                                DIRECTORIES_TO_DELETE["prefixes"]
-                            ):
+                                TO_BE_DELETED["exact"]
+                            ) or file_lowercase.startswith(TO_BE_DELETED["prefixes"]):
                                 delete_dir_or_file(filepath)
                             else:
                                 move_files = False
