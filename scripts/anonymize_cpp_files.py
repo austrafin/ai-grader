@@ -1,8 +1,31 @@
+"""Anonymizes C++ files by saving them to a separate path without the comments
+
+Assumes the following directory structure:
+<root>/
+├── <course 1>/
+│   └── student_repositories/
+│       ├── <assignment 1>/
+│       │   ├── <TUNI ID 1>/
+│       │   │   └── src/
+│       │   │       ├── *.h
+│       │   │       ├── *.cpp
+│       │   │       ├── *.ui
+│       │   │       └── ...
+│       │   └── <TUNI ID n>/
+│       │       └── ...
+│       └── <assignment n>/
+│           └── ...
+└── <course n>/
+    └── ...
+
+Usage:
+python clean_repositories.py <root>
+"""
+
 import argparse
 import os
 import re
 import shutil
-import stat
 
 
 COMMENT_PATTERN = re.compile(
