@@ -134,20 +134,23 @@ def main():
     parser.add_argument("courses_destination_dir")
     parser.add_argument("results_output_dir")
     parser.add_argument("--course")
+    parser.add_argument("--iterations", type=int, default=1)
 
     args = parser.parse_args()
-    ai_gradings = get_ai_gradings(
-        args.api_key,
-        args.model,
-        get_training_data(
-            courses_source_dir=args.courses_source_dir,
-            code_files_dir=args.courses_destination_dir,
-            course=args.course,
-        ),
-    )
-    overall_points, style_points = get_points_comparison(ai_gradings)
 
-    save_results(args.results_output_dir, ai_gradings, overall_points, style_points)
+    for _ in range(args.iterations):
+        ai_gradings = get_ai_gradings(
+            args.api_key,
+            args.model,
+            get_training_data(
+                courses_source_dir=args.courses_source_dir,
+                code_files_dir=args.courses_destination_dir,
+                course=args.course,
+            ),
+        )
+        overall_points, style_points = get_points_comparison(ai_gradings)
+
+        save_results(args.results_output_dir, ai_gradings, overall_points, style_points)
 
 
 if __name__ == "__main__":
